@@ -1,188 +1,389 @@
-import { ServiceItem, PeopleItem, TeamMember, SiteSettings } from '../types';
+import { ServiceItem, PeopleItem, TeamMember, SiteSettings, TrustFigure, DocketField } from '../types';
+
+/* ============================================================================
+   MR. PAL — content
+   Positioning: MR. PAL finds, checks and places care staff and home helpers
+   into Mumbai homes. It is a placement service, not a provider of medical care.
+   All figures below are placeholders for the client to replace with real ones.
+   ========================================================================== */
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  heroEyebrow: 'HOME CARE YOU CAN TRUST',
-  heroHeadingLine1: 'Care that',
-  heroHeadingLine2: 'feels personal.',
-  heroDescription: 'Home-care support for patients, senior citizens and families across Mumbai.',
-  heroImage: '/src/assets/images/hero_care_mumbai_1791178255414.jpg',
-  heroPrimaryCtaText: 'Book a Call',
-  heroSecondaryCtaText: 'WhatsApp Us',
-  
-  careFinderHeading: 'How can we help?',
-  careFinderSubheading: 'Tell us who needs care and explore immediate support options.',
-  
-  helperHeading: "Finding care shouldn't feel complicated.",
-  helperSubheading: 'We make it simple to tell us what you need and start the conversation.',
-  
-  ctaHeading: 'Need care for your loved one?',
-  ctaDescription: "Tell us what you need. Let's discuss the right support for your family.",
-  ctaButtonText: 'Book a Call',
-  
+  heroEyebrow: 'Care staff & home help — Mumbai',
+  heroHeadingLine1: 'The right person',
+  heroHeadingLine2: 'in your home.',
+  heroDescription:
+    'MR. PAL finds, checks and places trained caregivers, patient attendants and home helpers into Mumbai homes. Tell us the routine you need — we send the person who fits it.',
+  heroImage: 'heroCare',
+  heroPrimaryCtaText: 'Build your request',
+  heroSecondaryCtaText: 'WhatsApp us',
+
+  docketEyebrow: 'Service request',
+  docketHeading: 'Build your request.',
+  docketIntro:
+    'Four short questions. No account and no waiting — the summary fills in as you go, and you can send it to us straight away.',
+  docketSummaryLabel: 'Your request',
+  docketEmptyText: 'Nothing selected yet',
+  docketSubmitLabel: 'Send this request',
+  docketSecondaryLabel: 'Talk to someone first',
+
+  figuresEyebrow: 'In numbers',
+  figuresHeading: 'What we can tell you up front.',
+
+  verifyEyebrow: 'Before anyone is sent',
+  verifyHeading: 'How we check the people we place.',
+  verifyIntro:
+    'Families hand us the keys to their home. These are the checks that happen before any candidate reaches yours.',
+
+  limitsEyebrow: 'Plainly stated',
+  limitsHeading: 'What we do not do.',
+
+  processEyebrow: 'How it runs',
+  processHeading: 'From request to first day.',
+  processIntro:
+    'Four steps, and you can see roughly how long each one takes before you commit to anything.',
+
+  ctaHeading: 'Ready to start?',
+  ctaDescription:
+    'Send the request above, or call and speak to the person who actually places the staff. No forms to keep filling in.',
+  ctaButtonText: 'Request a call',
+
   whatsappNumber: '+91 98200 12345',
   phoneNumber: '+91 98200 12345',
   email: 'care@mrpal.in',
   address: 'Mumbai, Maharashtra, India',
-  defaultWhatsAppMessage: 'Hi, I would like to know more about home-care services.',
+  defaultWhatsAppMessage: 'Hi, I would like to request care staff for my home.',
+  responseCommitment:
+    'Every request is read by a person, not a bot. Enquiries sent outside office hours are answered first thing the next morning. Emergencies are answered at any hour.',
+  officeHours: 'Mon–Sun, 8:00 AM – 9:00 PM',
 };
+
+/** Placeholder figures. Replace with real, defensible numbers before launch. */
+export const DEFAULT_FIGURES: TrustFigure[] = [
+  {
+    id: 'placement-time',
+    value: '48 hrs',
+    label: 'Typical placement time',
+    note: 'From confirmed requirements to someone in the home, for a standard routine.',
+  },
+  {
+    id: 'checks',
+    value: '4',
+    label: 'Checks before placement',
+    note: 'Identity, address, two spoken references, and a skills conversation.',
+  },
+  {
+    id: 'areas',
+    value: '12',
+    label: 'Mumbai areas served',
+    note: 'Same-day reach across the areas listed in the request form above.',
+  },
+  {
+    id: 'trial',
+    value: '0',
+    label: 'Long contracts to sign',
+    note: 'If the match is wrong in the first few days, we replace at no cost.',
+  },
+];
+
+export const DEFAULT_VERIFY_STEPS: { title: string; description: string }[] = [
+  {
+    title: 'Identity and address',
+    description:
+      'Government photo ID and a current address proof are checked against the candidate before any placement is offered.',
+  },
+  {
+    title: 'Two references, actually spoken to',
+    description:
+      'We call previous employers or families and write down what they said — not simply that someone answered the phone.',
+  },
+  {
+    title: 'Skills matched to your routine',
+    description:
+      'A structured conversation about daily duties, mobility assistance and any medical routine that is part of the job.',
+  },
+  {
+    title: 'A trial before you commit',
+    description:
+      'The first few days are a trial period. If the fit is wrong we replace the person, and you are not asked to argue for it.',
+  },
+];
+
+export const DEFAULT_LIMITS: string[] = [
+  'We are not a hospital, and we do not provide medical treatment or nursing care outside a placed person’s duties.',
+  'We do not send untrained staff to clinical duties, however urgent the request is.',
+  'We do not quote a price before we understand the routine — charges depend on hours, duties and locality.',
+  'We do not lock families into long contracts or demand notice periods to change a person.',
+];
+
+export const DEFAULT_PROCESS_STEPS: {
+  title: string;
+  description: string;
+  timing: string;
+}[] = [
+  {
+    title: 'You send the request',
+    timing: 'Same day',
+    description:
+      'WhatsApp or the form on this page. A person reads it — there is no call centre in between.',
+  },
+  {
+    title: 'We call to understand the routine',
+    timing: 'Within 2 hours',
+    description:
+      'A short call about daily duties, timings, who needs support, and anything that is non-negotiable.',
+  },
+  {
+    title: 'You get verified profiles',
+    timing: 'Within 24 hours',
+    description:
+      'Usually two or three profiles, with the checks behind each one written down next to it.',
+  },
+  {
+    title: 'They come to your home',
+    timing: 'As you choose',
+    description:
+      'You meet the person before anything is finalised. Trial first, then continue if it works.',
+  },
+];
+
+/* ---------------------------------------------------------------------------
+   The four numbered fields of the docket.
+   Field ids match service ids so a selection can deep-link to /services/:slug.
+   ------------------------------------------------------------------------- */
+
+export const DEFAULT_DOCKET_FIELDS: DocketField[] = [
+  {
+    id: 'need',
+    label: 'Who needs support at home?',
+    hint: 'Pick the closest fit. We confirm the detail on the call.',
+    options: [
+      { id: 'elder-care', label: 'A parent or senior relative', hint: 'Staying independent, needs daily help' },
+      { id: 'patient-care', label: 'Someone recovering or unwell', hint: 'After discharge, surgery or illness' },
+      { id: 'dementia-care', label: 'Someone with memory loss', hint: 'Dementia, Alzheimer’s or confusion' },
+      { id: 'paralysis-care', label: 'Someone with limited mobility', hint: 'Bed, wheelchair or transfer support' },
+      { id: 'not-sure', label: 'Not sure yet', hint: 'We will help you work it out' },
+    ],
+  },
+  {
+    id: 'role',
+    label: 'Whom would you like?',
+    hint: 'The kind of person you would prefer in the home.',
+    options: [
+      { id: 'caregiver', label: 'Caregiver', hint: 'Daily routine, hygiene, companionship' },
+      { id: 'home-nurse', label: 'Home nurse', hint: 'Vitals, medication, clinical routine' },
+      { id: 'attendant', label: 'Patient attendant', hint: 'Transfers, bedside, physical support' },
+      { id: 'home-helper', label: 'Home helper or maid', hint: 'Cooking, cleaning, household support' },
+    ],
+  },
+  {
+    id: 'locality',
+    label: 'Which part of Mumbai?',
+    hint: 'Helps us send someone who can reach you reliably.',
+    options: [
+      { id: 'bandra-west', label: 'Bandra West' },
+      { id: 'andheri-east', label: 'Andheri East' },
+      { id: 'powai', label: 'Powai' },
+      { id: 'chembur', label: 'Chembur' },
+      { id: 'dadar', label: 'Dadar' },
+      { id: 'wadhale', label: 'Wadhale' },
+      { id: 'kurla', label: 'Kurla' },
+      { id: 'borivali', label: 'Borivali' },
+      { id: 'malad', label: 'Malad' },
+      { id: 'thane', label: 'Thane' },
+      { id: 'fort', label: 'Fort' },
+      { id: 'chembur-north', label: 'Chembur North' },
+    ],
+  },
+  {
+    id: 'timing',
+    label: 'When would you like to start?',
+    hint: 'An honest answer makes the matching faster.',
+    options: [
+      { id: 'asap', label: 'As soon as possible' },
+      { id: 'week', label: 'Within a week' },
+      { id: 'month', label: 'Within a month' },
+      { id: 'exploring', label: 'Just exploring' },
+    ],
+  },
+];
 
 export const DEFAULT_SERVICES: ServiceItem[] = [
   {
     id: 'patient-care',
     slug: 'patient-care',
     name: 'Patient Care',
-    shortDescription: 'Support for patients recovering at home.',
-    description: 'Dedicated post-hospitalization recovery, daily vital tracking, and gentle bedside assistance for recovering individuals.',
-    image: '/src/assets/images/care_patient_nurse_1791178278602.jpg',
+    shortDescription: 'Support for someone recovering at home after discharge or surgery.',
+    description:
+      'For someone coming home after hospital discharge or surgery, we place a trained attendant or nurse who can manage the bedside routine, hygiene and medication reminders at home.',
+    image: 'patientCare',
     supportPoints: [
       'Post-surgery and discharge recovery monitoring',
       'Assistance with daily hygiene, feeding and medication reminders',
-      'Bedside care, repositioning and comfort support',
-      'Coordination with family and treating physician notes'
+      'Bedside positioning, comfort and turning support',
+      'Notes relayed to your family and your treating doctor',
     ],
-    ctaText: 'Enquire for Patient Care',
+    ctaText: 'Enquire about Patient Care',
     whoIsThisFor: [
-      'Individuals recovering from hospital discharge or surgery',
-      'Patients needing continuous physical recovery support',
-      'Bedridden or semi-ambulatory patients requiring daily dignity and hygiene',
-      'Families needing a reliable bedside companion in Mumbai'
+      'Someone recovering from hospital discharge or surgery',
+      'A patient who needs steady physical support during recovery',
+      'A bedridden or semi-ambulatory patient needing dignity preserved daily',
+      'Families in Mumbai who want one reliable person, not a rotating roster',
     ],
     howWeHelpCards: [
       {
-        title: 'Medication & Routine Reminders',
-        description: 'Timely reminders for prescribed doses, doctor instructions, and dietary schedules.'
+        title: 'Medication and routine reminders',
+        description:
+          'Timely reminders for prescribed doses, doctor instructions and dietary timings — recorded in writing for the family.',
       },
       {
-        title: 'Mobility & Bedside Comfort',
-        description: 'Assisting with safe transfers, repositioning to prevent bed sores, and gentle movements.'
+        title: 'Mobility and bedside comfort',
+        description:
+          'Assisting with safe transfers, repositioning to protect skin, and the small movements that keep someone comfortable.',
       },
       {
-        title: 'Personal Hygiene & Bathing',
-        description: 'Respectful assistance with sponge baths, grooming, dressing, and linen changes.'
+        title: 'Personal hygiene and bathing',
+        description:
+          'Respectful assistance with sponge baths, grooming, dressing and linen changes, from someone used to doing it well.',
       },
       {
-        title: 'Family Updates & Regular Check-ins',
-        description: 'Clear communication with family members so you always know how your loved one is resting.'
-      }
-    ]
+        title: 'Family updates',
+        description:
+          'Written updates so the family knows how the day actually went, not just that the person was present.',
+      },
+    ],
   },
   {
     id: 'elder-care',
     slug: 'elder-care',
     name: 'Elder Care',
-    shortDescription: 'Compassionate support for senior citizens.',
-    description: 'Empathetic companionship, daily routine assistance, and peaceful presence for aging parents at home.',
-    image: '/src/assets/images/care_elder_parent_1791178267696.jpg',
+    shortDescription: 'Everyday support so a parent can stay in their own home.',
+    description:
+      'For a parent who wants to stay in their own home, we place a caregiver who can share the daily routine, help with mobility, and keep company — without taking over.',
+    image: 'elderCare',
     supportPoints: [
-      'Companionship, reading, and gentle conversational presence',
+      'Companionship, reading and unhurried conversation',
       'Assistance with walking, daily walks and fall prevention',
-      'Nutritious meal assistance and hydration tracking',
-      'Daily personal care with utmost respect and patience'
+      'Helpful meal preparation and hydration',
+      'Everyday personal care, with patience and respect',
     ],
-    ctaText: 'Enquire for Elder Care',
+    ctaText: 'Enquire about Elder Care',
     whoIsThisFor: [
       'Aging parents living independently in Mumbai apartments',
-      'Seniors who need a trusted companion during daytime or night hours',
-      'Elders with reduced mobility or fear of falling',
-      'Working children who want peace of mind while at office or abroad'
+      'Seniors who want company during the day or through the night',
+      'Elders with reduced mobility or a fear of falling',
+      'Working children who want to know their parent is fine while they are at work or abroad',
     ],
     howWeHelpCards: [
       {
-        title: 'Warm Companionship',
-        description: 'A friendly, respectful companion who listens, walks together, and shares comfortable conversations.'
+        title: 'Company that is not a task',
+        description:
+          'A caregiver who listens, walks with them and is comfortable in ordinary conversation.',
       },
       {
-        title: 'Fall Prevention & Safe Walking',
-        description: 'Attentive support while getting out of bed, walking inside the home, or going for fresh air.'
+        title: 'Fall prevention and safe walking',
+        description:
+          'Attentive support getting in and out of bed, walking inside the home, or going out for fresh air.',
       },
       {
-        title: 'Daily Routine Management',
-        description: 'Assistance with waking up, freshening up, taking warm meals on time, and peaceful bedtime habits.'
+        title: 'Running the daily routine',
+        description:
+          'Waking, freshening up, warm meals on time and a settled bedtime — the small things that hold a day together.',
       },
       {
-        title: 'Peace of Mind for Families',
-        description: 'Knowing your mother or father is never alone, feeling respected and well-attended to every day.'
-      }
-    ]
+        title: 'Peace of mind for the family',
+        description:
+          'Knowing your mother or father is never alone, and is never handled carelessly.',
+      },
+    ],
   },
   {
     id: 'dementia-care',
     slug: 'dementia-care',
     name: 'Dementia Care',
-    shortDescription: 'Patient and attentive care for individuals with dementia.',
-    description: 'Specialized patience, calming routines, and watchful supervision for loved ones experiencing memory loss or cognitive changes.',
-    image: '/src/assets/images/care_dementia_compassion_1791178313622.jpg',
+    shortDescription: 'Patient, watchful support for memory loss and confusion.',
+    description:
+      'For someone living with memory loss or dementia, we place a person experienced in calm routines and quiet supervision. This is the hardest match to get right, so we spend longer on it.',
+    image: 'dementiaCare',
     supportPoints: [
-      'Gentle de-escalation and soothing reassurance during confusion',
-      'Continuous watchful supervision to prevent wandering',
-      'Structured familiar daily routines to reduce agitation',
-      'Kind assistance with hygiene, nutrition, and comfort'
+      'Gentle reassurance during confusion, without confrontation',
+      'Watchful supervision to prevent wandering',
+      'Familiar, predictable daily routines to reduce agitation',
+      'Kind assistance with hygiene, meals and comfort',
     ],
-    ctaText: 'Enquire for Dementia Care',
+    ctaText: 'Enquire about Dementia Care',
     whoIsThisFor: [
-      'Individuals with Alzheimer’s or progressive memory loss',
-      'Seniors experiencing sundowning, confusion, or disorientation',
-      'Families exhausted by 24/7 caregiving duties needing dependable support',
-      'Loved ones who thrive best in the comfort of their familiar home environment'
+      'People living with Alzheimer’s or progressive memory loss',
+      'Seniors experiencing sundowning, confusion or disorientation',
+      'Families who are exhausted by round-the-clock caregiving',
+      'Loved ones who do best in a familiar home rather than an institution',
     ],
     howWeHelpCards: [
       {
-        title: 'Patience & Calm Communication',
-        description: 'Trained in gentle responses that reduce anxiety, avoiding confrontation or distress.'
+        title: 'Calm, unhurried responses',
+        description:
+          'Trained to answer confusion gently, because arguing is what usually makes it worse.',
       },
       {
-        title: 'Safe Environment & Supervision',
-        description: 'Constant awareness of room exits, kitchen hazards, and personal safety without feeling restrictive.'
+        title: 'A safe, familiar environment',
+        description:
+          'Awareness of exits, kitchen hazards and stairs — supervised without feeling locked in.',
       },
       {
-        title: 'Cognitive Engagement & Memory Prompts',
-        description: 'Gentle activities like viewing family photo albums, listening to familiar music, and mild hobbies.'
+        title: 'Familiar things to hold onto',
+        description:
+          'Family photo albums, familiar music and simple familiar routines as anchors through the day.',
       },
       {
-        title: 'Emotional Support for Family Members',
-        description: 'Allowing sons, daughters, and spouses to step back from exhaustion and be family again.'
-      }
-    ]
+        title: 'Rest for the family',
+        description:
+          'Letting sons, daughters and spouses step back from exhaustion and be family again.',
+      },
+    ],
   },
   {
     id: 'paralysis-care',
     slug: 'paralysis-care',
     name: 'Paralysis Care',
-    shortDescription: 'Daily assistance and home support.',
-    description: 'Skilled physical transfer assistance, bed sore prevention, and dignified daily care for individuals with restricted mobility.',
-    image: '/src/assets/images/care_paralysis_support_1791178323085.jpg',
+    shortDescription: 'Trained help with transfers, positioning and daily dignity.',
+    description:
+      'For someone with restricted mobility, we place an attendant trained in safe transfers, regular positioning and personal care carried out with real dignity.',
+    image: 'paralysisCare',
     supportPoints: [
-      'Safe transfer between bed, wheelchair, and chair',
-      'Regular turning schedules to protect skin integrity',
-      'Passive limb exercises as recommended by physiotherapists',
-      'Comprehensive hygiene, diaper change, and feeding support'
+      'Safe transfer between bed, wheelchair and chair',
+      'Regular turning schedules to protect the skin',
+      'Passive limb exercises as advised by a physiotherapist',
+      'Hygiene, continence and feeding support done carefully',
     ],
-    ctaText: 'Enquire for Paralysis Care',
+    ctaText: 'Enquire about Paralysis Care',
     whoIsThisFor: [
-      'Stroke survivors recovering motor functions at home',
-      'Individuals with hemiplegia, paraplegia, or quadriplegia',
-      'Patients needing specialized physical assistance and wheelchair mobility',
-      'Families needing physically capable and emotionally sensitive attendants'
+      'Stroke survivors regaining movement at home',
+      'People living with hemiplegia, paraplegia or quadriplegia',
+      'Patients needing skilled transfers and wheelchair mobility',
+      'Families who need someone physically capable and emotionally steady',
     ],
     howWeHelpCards: [
       {
-        title: 'Safe Body Transfers',
-        description: 'Trained ergonomics for lifting and moving patients smoothly between bed, wheelchair, and commode.'
+        title: 'Transfers done safely',
+        description:
+          'Trained technique for moving someone between bed, wheelchair and commode without injury to either of you.',
       },
       {
-        title: 'Skin Care & Positioning',
-        description: 'Frequent scheduled positional turns, back rubs, and skin checks to prevent pressure sores.'
+        title: 'Skin care and positioning',
+        description:
+          'Scheduled turns, checks and pressure care — the unglamorous work that prevents serious complications.',
       },
       {
-        title: 'Prescribed Exercise Support',
-        description: 'Assisting with range-of-motion movements directed by the patient’s physiotherapist.'
+        title: 'Prescribed movement support',
+        description:
+          'Assisting with the range-of-motion exercises a physiotherapist has already set.',
       },
       {
-        title: 'Dignified Personal Care',
-        description: 'Maintaining hygiene, sponging, and grooming with maximum sensitivity and personal respect.'
-      }
-    ]
-  }
+        title: 'Dignity as the standard',
+        description:
+          'Hygiene, sponging and grooming handled with the seriousness they deserve.',
+      },
+    ],
+  },
 ];
 
 export const DEFAULT_PEOPLE: PeopleItem[] = [
@@ -190,58 +391,62 @@ export const DEFAULT_PEOPLE: PeopleItem[] = [
     id: 'home-nurses',
     role: 'Home Nurses',
     title: 'Home Nurses',
-    photo: '/src/assets/images/care_patient_nurse_1791178278602.jpg',
-    shortDescription: 'Nursing support at home for vital tracking, injections, dressings, and medical routines.',
-    learnMoreText: 'Learn More',
+    photo: 'patientCare',
+    shortDescription:
+      'Placed with families needing nursing support at home — vitals, dressing and medical routine.',
+    learnMoreText: 'Typical duties',
     responsibilities: [
       'Regular monitoring of vitals (BP, sugar, pulse, oxygen)',
       'Administration of prescribed medications and injections',
-      'Wound dressing, catheter maintenance, and clinical support',
-      'Direct updates for family members and attending doctors'
-    ]
+      'Wound dressing, catheter maintenance and clinical support',
+      'Written updates for the family and the attending doctor',
+    ],
   },
   {
     id: 'caregivers',
     role: 'Caregivers',
     title: 'Caregivers',
-    photo: '/src/assets/images/hero_care_mumbai_1791178255414.jpg',
-    shortDescription: 'Personal and daily assistance for elders and recovering patients.',
-    learnMoreText: 'Learn More',
+    photo: 'heroCare',
+    shortDescription:
+      'Placed with families for daily assistance, hygiene and companionship at home.',
+    learnMoreText: 'Typical duties',
     responsibilities: [
-      'Daily personal hygiene, bathing, and grooming assistance',
-      'Mealtime assistance and adherence to nutritional routines',
-      'Mobility encouragement, gentle walking, and companionship',
-      'Creating a peaceful, structured atmosphere at home'
-    ]
+      'Daily personal hygiene, bathing and grooming assistance',
+      'Mealtime assistance and help following dietary routines',
+      'Mobility encouragement, gentle walking and companionship',
+      'Keeping the household calm and predictable',
+    ],
   },
   {
     id: 'patient-attendants',
     role: 'Patient Attendants',
     title: 'Patient Attendants',
-    photo: '/src/assets/images/people_home_attendant_1791178332959.jpg',
-    shortDescription: 'Support for patients who need assistance with physical transfers and bedside routines.',
-    learnMoreText: 'Learn More',
+    photo: 'attendant',
+    shortDescription:
+      'Placed with patients who need physical transfers and bedside support, day or night.',
+    learnMoreText: 'Typical duties',
     responsibilities: [
-      'Patient repositioning and wheelchair assistance',
-      'Bedside monitoring during day and night hours',
-      'Assistance with commode and diaper changes',
-      'Coordinating physical comfort and family peace of mind'
-    ]
+      'Repositioning and wheelchair assistance',
+      'Bedside presence through the night',
+      'Assistance with commode and continence care',
+      'Reporting comfort and any concerns to the family',
+    ],
   },
   {
     id: 'maids-home-help',
     role: 'Maids & Home Help',
     title: 'Maids & Home Help',
-    photo: '/src/assets/images/people_home_help_maid_1791178343862.jpg',
-    shortDescription: 'Reliable assistance for household needs, cooking simple meals, and keeping surroundings clean.',
-    learnMoreText: 'Learn More',
+    photo: 'homeHelper',
+    shortDescription:
+      'Placed with Mumbai households for cooking, cleaning and everyday domestic support.',
+    learnMoreText: 'Typical duties',
     responsibilities: [
-      'Tidying up patient rooms and sanitizing living areas',
-      'Preparation of light, hygienic home-cooked meals',
-      'Washing patient linens, clothes, and everyday utensils',
-      'Dependable domestic support for busy Mumbai households'
-    ]
-  }
+      'Tidying and sanitising living areas and the patient’s room',
+      'Preparing simple, hygienic home-cooked meals',
+      'Washing linens, clothes and everyday utensils',
+      'Dependable support for households running on a schedule',
+    ],
+  },
 ];
 
 export const DEFAULT_TEAM: TeamMember[] = [
@@ -250,102 +455,39 @@ export const DEFAULT_TEAM: TeamMember[] = [
     slug: 'rahul-sharma',
     name: 'Rahul Sharma',
     designation: 'Founder',
-    photo: '/src/assets/images/people_home_attendant_1791178332959.jpg',
-    bio: 'Rahul founded Mr. Pal with a singular mission: to provide Mumbai families with trustworthy, respectful, and compassionate care staff right in their own homes.',
-    expertise: ['Care Operations', 'Family Needs Assessment', 'Staff Vetting & Placement'],
-    phoneOrContactNote: 'Available to discuss custom family care requirements across Mumbai.'
+    photo: 'elderCare',
+    bio: 'Rahul founded MR. PAL after hiring help for his own father and seeing how little families were told before someone arrived at the door. He now vets every placement himself.',
+    expertise: ['Placement standards', 'Family needs assessment', 'Candidate interviews'],
+    phoneOrContactNote: 'Reviews every first-time placement personally.',
   },
   {
     id: 'priya-mehta',
     slug: 'priya-mehta',
     name: 'Priya Mehta',
     designation: 'Care Coordinator',
-    photo: '/src/assets/images/care_patient_nurse_1791178278602.jpg',
-    bio: 'Priya works closely with families to evaluate their loved one’s specific medical and personal routine, matching them with the most fitting caregiver or nurse.',
-    expertise: ['Elder Care Planning', 'Patient Bedside Routine', 'Caregiver Orientation'],
-    phoneOrContactNote: 'Coordinates daily care schedules and client feedback.'
+    photo: 'familyCare',
+    bio: 'Priya takes the first call. She works out the routine in detail — timings, duties, what the family is worried about — before any candidate is shortlisted.',
+    expertise: ['Routine mapping', 'Elder care planning', 'Family communication'],
+    phoneOrContactNote: 'The person who answers your first call.',
   },
   {
     id: 'amit-verma',
     slug: 'amit-verma',
     name: 'Amit Verma',
     designation: 'Operations',
-    photo: '/src/assets/images/people_home_attendant_1791178332959.jpg',
-    bio: 'Amit oversees day-to-day deployment and background verification of care assistants and attendants across Mumbai neighbourhoods.',
-    expertise: ['Logistics & Neighborhood Deployment', 'Staff Attendance & Backup', 'Quality Follow-ups'],
-    phoneOrContactNote: 'Ensures prompt replacement support and smooth continuity of care.'
+    photo: 'attendant',
+    bio: 'Amit handles verification and deployment. He is the reason a profile arrives with the checks already written down, and the one who arranges a replacement when a match does not work.',
+    expertise: ['Verification', 'Deployment and attendance', 'Replacement cover'],
+    phoneOrContactNote: 'Arranges cover and replacements across Mumbai.',
   },
   {
     id: 'neha-kapoor',
     slug: 'neha-kapoor',
     name: 'Neha Kapoor',
     designation: 'Client Support',
-    photo: '/src/assets/images/hero_care_mumbai_1791178255414.jpg',
-    bio: 'Neha is the friendly, dependable voice that families speak with for urgent queries, emergency support adjustments, and weekly check-ins.',
-    expertise: ['Client Relationship', 'Family Communication', 'Emergency Support Facilitation'],
-    phoneOrContactNote: 'Dedicated helpline for ongoing family care support.'
-  }
-];
-
-export const INTERACTIVE_HELPER_OPTIONS = [
-  {
-    id: 'parent',
-    title: 'Care for my parent',
-    badge: 'Elder Care',
-    headline: 'Care for my parent',
-    explanation: 'Compassionate everyday support for senior citizens, including personal care, routine assistance, gentle companionship, and fall prevention.',
-    recommendedService: 'elder-care',
-    image: '/src/assets/images/care_elder_parent_1791178267696.jpg',
-    highlights: ['Companionship & Chai Time', 'Medication Reminders', 'Assisted Walking & Mobility', 'Day or 24/7 Presence']
+    photo: 'homeHelper',
+    bio: 'Neha stays with a family after placement. If something is not right in week two, she is the one who hears it and moves on it.',
+    expertise: ['After-placement follow-up', 'Feedback and escalation', 'Hours and scheduling'],
+    phoneOrContactNote: 'On call for anything that changes after the first day.',
   },
-  {
-    id: 'patient',
-    title: 'Care for a patient',
-    badge: 'Patient Care',
-    headline: 'Care for a recovering patient',
-    explanation: 'Focused bedside support for patients recovering from surgery, illness, or hospital discharge in the comfort and privacy of their home.',
-    recommendedService: 'patient-care',
-    image: '/src/assets/images/care_patient_nurse_1791178278602.jpg',
-    highlights: ['Bedside Hygiene & Sponging', 'Vital Signs Tracking', 'Dietary Feeding Support', 'Post-Op Recovery Comfort']
-  },
-  {
-    id: 'dementia',
-    title: 'Dementia care',
-    badge: 'Dementia Care',
-    headline: 'Compassionate dementia & memory care',
-    explanation: 'Patient, attentive care and watchful supervision tailored to individuals experiencing Alzheimer’s, memory loss, or confusion.',
-    recommendedService: 'dementia-care',
-    image: '/src/assets/images/care_dementia_compassion_1791178313622.jpg',
-    highlights: ['Calm Reassurance', 'Wandering Prevention', 'Familiar Daily Routines', 'Relief for Family Caregivers']
-  },
-  {
-    id: 'paralysis',
-    title: 'Paralysis care',
-    badge: 'Paralysis Care',
-    headline: 'Dedicated paralysis & stroke assistance',
-    explanation: 'Physical transfer assistance, regular body turning to avoid bedsores, and dignified daily routine management for restricted mobility.',
-    recommendedService: 'paralysis-care',
-    image: '/src/assets/images/care_paralysis_support_1791178323085.jpg',
-    highlights: ['Bed-to-Wheelchair Transfer', 'Skin & Pressure Sore Care', 'Passive Exercises', 'Dignified Sponge & Grooming']
-  },
-  {
-    id: 'attendant',
-    title: 'Caregiver / Attendant',
-    badge: 'Human Resources',
-    headline: 'Trained Caregivers & Bedside Attendants',
-    explanation: 'Vetted, respectful care personnel ready to assist with daily living activities, personal hygiene, and round-the-clock peace of mind.',
-    recommendedService: 'patient-care',
-    image: '/src/assets/images/people_home_attendant_1791178332959.jpg',
-    highlights: ['12-Hour Day / Night Shifts', '24-Hour Live-in Options', 'Vetted & Verified Staff', 'Empathetic Family Support']
-  },
-  {
-    id: 'homehelp',
-    title: 'Home help / Maid',
-    badge: 'Domestic Support',
-    headline: 'Reliable Maids & Domestic Helpers',
-    explanation: 'Dependable domestic assistance to manage household chores, kitchen cleanliness, and light healthy cooking so families can focus on care.',
-    recommendedService: 'elder-care',
-    image: '/src/assets/images/people_home_help_maid_1791178343862.jpg',
-    highlights: ['Patient Room Tidying', 'Simple Nutritious Cooking', 'Laundry & Linens Care', 'Reliable Mumbai Household Help']
-  }
 ];

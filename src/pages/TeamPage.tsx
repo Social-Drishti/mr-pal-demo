@@ -1,98 +1,88 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, PhoneCall, MessageCircle, Heart, Shield } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
+import { ButtonLink, SectionHeader } from '../components/ui';
+import { Photo } from '../components/Photo';
+import { resolvePhoto } from '../data/images';
 
 export const TeamPage: React.FC = () => {
-  const { team, openWhatsApp } = useSite();
+  const { team, settings } = useSite();
 
   return (
-    <div className="min-h-screen py-10 sm:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
-          <span className="text-[11px] font-semibold text-[#C96F45] tracking-[0.2em] uppercase bg-[#E8D8C5]/60 px-3.5 py-1 rounded-full">
-            OUR DEDICATED TEAM
-          </span>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#102A21] tracking-tight">
-            Meet the people behind the care.
-          </h1>
-          <p className="text-base sm:text-lg text-[#5F6B64] leading-relaxed">
-            Our team coordinates, vets, and supports every caregiver and family across Mumbai. We are always one call away.
-          </p>
+    <>
+      <section className="bg-paper pt-12 pb-12 sm:pt-16 sm:pb-16">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="The people here"
+            heading="Four people you will actually speak to."
+            lead="There is no call centre between you and us. These are the names that come up when you ask who is handling it."
+          />
         </div>
+      </section>
 
-        {/* Team Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {team.map((member) => (
-            <div
-              key={member.id}
-              className="bg-white rounded-2xl p-5 border border-[#E2D7C7] shadow-xs hover:shadow-md transition-smooth flex flex-col justify-between"
-            >
-              <div>
-                <div className="rounded-xl overflow-hidden aspect-[4/3] mb-4 bg-[#E8D8C5]">
-                  <img
-                    src={member.photo}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
+      <section className="bg-paper pb-16 sm:pb-24">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-px border border-rule bg-rule sm:grid-cols-2">
+            {team.map((member, index) => (
+              <article key={member.id} className="bg-paper p-6 sm:p-8">
+                <div className="flex gap-5">
+                  <div className="h-20 w-20 shrink-0 overflow-hidden bg-sand sm:h-24 sm:w-24">
+                    <Photo
+                      {...resolvePhoto(member.photo)}
+                      width={400}
+                      height={299}
+                      alt={member.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="docket-meta text-ink-faint">
+                      {String(index + 1).padStart(2, '0')} — {member.designation}
+                    </div>
+                    <h2 className="mt-2 text-h3">{member.name}</h2>
+                  </div>
                 </div>
-                <span className="text-[10px] font-bold text-[#C96F45] uppercase tracking-wider block mb-1">
-                  {member.designation}
-                </span>
-                <h3 className="font-display text-xl font-bold text-[#102A21]">
-                  {member.name}
-                </h3>
-                <p className="text-xs text-[#5F6B64] mt-2 line-clamp-3 leading-relaxed">
-                  {member.bio}
-                </p>
-              </div>
 
-              <div className="mt-5 pt-3 border-t border-[#F0EAE1]">
+                <p className="mt-6 text-body text-ink-muted">{member.bio}</p>
+
                 <Link
                   to={`/team/${member.slug}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#102A21] hover:text-[#C96F45] transition-colors"
+                  className="group mt-6 inline-flex items-center gap-2 text-small font-semibold text-ink underline decoration-terracotta decoration-1 underline-offset-[6px] transition-settle hover:decoration-2"
                 >
-                  <span>View Profile & Expertise</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  Full profile
+                  <ArrowRight
+                    className="h-3.5 w-3.5 transition-settle group-hover:translate-x-1"
+                    aria-hidden
+                  />
                 </Link>
-              </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-paper-sunk py-14 sm:py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-xl">
+              <div className="docket-meta text-terracotta">Not sure who to ask</div>
+              <h2 className="mt-4 text-h2">
+                Start with whoever picks up.
+              </h2>
+              <p className="mt-4 text-lead text-ink-muted">{settings.responseCommitment}</p>
             </div>
-          ))}
-        </div>
-
-        {/* Bottom Reassurance Banner */}
-        <div className="bg-[#EFE9DD] rounded-3xl p-8 sm:p-10 border border-[#E2D7C7] text-center max-w-3xl mx-auto space-y-4">
-          <div className="w-12 h-12 rounded-full bg-[#102A21] text-white flex items-center justify-center mx-auto">
-            <Shield className="w-6 h-6 text-emerald-400" />
-          </div>
-          <h3 className="font-display text-2xl font-normal text-[#102A21]">
-            Need advice on which care plan suits your family?
-          </h3>
-          <p className="text-sm text-[#5F6B64] max-w-lg mx-auto">
-            Our care coordinators can speak with you over a 10-minute friendly phone call or WhatsApp chat.
-          </p>
-          <div className="pt-2 flex flex-col sm:flex-row justify-center gap-3">
-            <Link
-              to="/book-a-call"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#102A21] hover:bg-[#173D2C] text-white text-xs font-semibold tracking-wider uppercase transition-colors"
-            >
-              <PhoneCall className="w-4 h-4" />
-              <span>Book a Discovery Call</span>
-            </Link>
-            <button
-              onClick={() => openWhatsApp('Hi, I would like to speak with Mr. Pal team.')}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-[#102A21] text-[#102A21] hover:bg-white text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>WhatsApp Coordinator</span>
-            </button>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+              <ButtonLink to="/#request" variant="primary">
+                Build a request
+              </ButtonLink>
+              <ButtonLink to="/book-a-call" variant="outline">
+                Request a call
+              </ButtonLink>
+            </div>
           </div>
         </div>
-
-      </div>
-    </div>
+      </section>
+    </>
   );
 };

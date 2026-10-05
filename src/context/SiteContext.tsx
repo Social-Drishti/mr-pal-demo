@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ServiceItem, PeopleItem, TeamMember, SiteSettings } from '../types';
 import { DEFAULT_SETTINGS, DEFAULT_SERVICES, DEFAULT_PEOPLE, DEFAULT_TEAM } from '../data/defaultData';
+import { migrateImageRefs } from '../data/images';
 
 interface SiteContextType {
   settings: SiteSettings;
@@ -28,7 +29,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const saved = localStorage.getItem('mrpal_settings');
       if (!saved) return DEFAULT_SETTINGS;
       const parsed = JSON.parse(saved);
-      return { ...DEFAULT_SETTINGS, ...parsed };
+      return migrateImageRefs({ ...DEFAULT_SETTINGS, ...parsed });
     } catch {
       return DEFAULT_SETTINGS;
     }
@@ -37,7 +38,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [services, setServices] = useState<ServiceItem[]>(() => {
     try {
       const saved = localStorage.getItem('mrpal_services');
-      return saved ? JSON.parse(saved) : DEFAULT_SERVICES;
+      return saved ? migrateImageRefs(JSON.parse(saved)) : DEFAULT_SERVICES;
     } catch {
       return DEFAULT_SERVICES;
     }
@@ -46,7 +47,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [people, setPeople] = useState<PeopleItem[]>(() => {
     try {
       const saved = localStorage.getItem('mrpal_people');
-      return saved ? JSON.parse(saved) : DEFAULT_PEOPLE;
+      return saved ? migrateImageRefs(JSON.parse(saved)) : DEFAULT_PEOPLE;
     } catch {
       return DEFAULT_PEOPLE;
     }
@@ -55,7 +56,7 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [team] = useState<TeamMember[]>(() => {
     try {
       const saved = localStorage.getItem('mrpal_team');
-      return saved ? JSON.parse(saved) : DEFAULT_TEAM;
+      return saved ? migrateImageRefs(JSON.parse(saved)) : DEFAULT_TEAM;
     } catch {
       return DEFAULT_TEAM;
     }

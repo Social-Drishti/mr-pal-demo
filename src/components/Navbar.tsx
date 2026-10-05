@@ -1,235 +1,171 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MessageCircle, Menu, X, PhoneCall, ShieldCheck } from 'lucide-react';
+import { MessageCircle, Menu, X } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
+import { DEFAULT_SERVICES } from '../data/defaultData';
 
-export const Navbar: React.FC = () => {
-  const { openWhatsApp, settings } = useSite();
+const NAV_LINKS = [
+  { label: 'Request', to: '/#request' },
+  { label: 'Services', to: '/services' },
+  { label: 'Team', to: '/team' },
+  { label: 'About', to: '/about' },
+];
+
+export function Navbar() {
+  const { openWhatsApp } = useSite();
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const isActive = (path: string) => {
-    if (path === '/' && location.pathname === '/') return true;
-    if (path !== '/' && location.pathname.startsWith(path)) return true;
-    return false;
-  };
+  // Close the drawer on navigation, and let Escape dismiss it.
+  useEffect(() => setOpen(false), [location.pathname, location.hash]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const isActive = (path: string) =>
+    path !== '/' && location.pathname.startsWith(path);
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#F5F1E8]/95 backdrop-blur-md border-b border-[#E2D7C7] transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          
-          {/* Brand Wordmark (Understated, premium text-based wordmark) */}
-          <Link to="/" className="flex flex-col group text-left">
-            <span className="font-display text-2xl sm:text-[27px] font-bold tracking-tight text-[#102A21] group-hover:text-[#C96F45] transition-colors">
+      <header className="sticky top-0 z-40 border-b border-rule bg-paper">
+        <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
+          <Link to="/" className="group text-left">
+            {/* No tagline under the wordmark. "Care at home" reads as a second
+                name for the business, and the wordmark is enough on its own. */}
+            <span className="font-display text-xl leading-none text-forest transition-colors group-hover:text-terracotta sm:text-2xl">
               MR. PAL
-            </span>
-            <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.26em] text-[#5F6B64] uppercase -mt-0.5">
-              — CARE AT HOME —
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-9 text-sm font-medium text-[#17211D]">
-            <Link
-              to="/"
-              className={`hover:text-[#C96F45] transition-colors relative py-1 ${
-                isActive('/') ? 'text-[#102A21] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#C96F45]' : ''
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className={`hover:text-[#C96F45] transition-colors relative py-1 ${
-                isActive('/about') ? 'text-[#102A21] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#C96F45]' : ''
-              }`}
-            >
-              About
-            </Link>
-            <Link
-              to="/#services"
-              className={`hover:text-[#C96F45] transition-colors relative py-1 ${
-                isActive('/services') ? 'text-[#102A21] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#C96F45]' : ''
-              }`}
-            >
-              Services
-            </Link>
-            <Link
-              to="/team"
-              className={`hover:text-[#C96F45] transition-colors relative py-1 ${
-                isActive('/team') ? 'text-[#102A21] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#C96F45]' : ''
-              }`}
-            >
-              Our Team
-            </Link>
-            <Link
-              to="/book-a-call"
-              className={`hover:text-[#C96F45] transition-colors relative py-1 ${
-                isActive('/book-a-call') ? 'text-[#102A21] font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#C96F45]' : ''
-              }`}
-            >
-              Book a Call
-            </Link>
+          <nav className="hidden items-center gap-8 md:flex">
+            {NAV_LINKS.map(link => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`border-b-2 py-1 text-small transition-settle ${
+                  isActive(link.to)
+                    ? 'border-terracotta font-semibold text-ink'
+                    : 'border-transparent text-ink-muted hover:border-rule hover:text-ink'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Desktop Primary Action */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => openWhatsApp()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#173D2C] hover:bg-[#102A21] text-white text-xs font-semibold tracking-wide transition-smooth shadow-xs cursor-pointer whitespace-nowrap"
+              className="hidden cursor-pointer items-center gap-2 rounded-sm bg-forest px-4 py-2.5 text-small font-semibold tracking-[0.04em] text-on-dark transition-settle hover:bg-forest-deep md:inline-flex"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
-              <span>WhatsApp Us</span>
+              <MessageCircle className="h-4 w-4" aria-hidden />
+              WhatsApp us
             </button>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-lg text-[#102A21] hover:bg-[#E8D8C5]/50 transition-colors cursor-pointer"
-              aria-label="Toggle navigation menu"
+              onClick={() => setOpen(v => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              className="flex h-10 w-10 cursor-pointer items-center justify-center text-forest transition-settle hover:bg-paper-sunk md:hidden"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden bg-black/40 backdrop-blur-xs flex justify-end animate-in fade-in duration-200">
-          <div className="w-[85%] max-w-sm bg-[#FAF7F2] h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
-            <div>
-              <div className="flex items-center justify-between pb-6 border-b border-[#E8DFD3]">
-                <div className="flex flex-col">
-                  <span className="font-display text-2xl font-bold tracking-tight text-[#1A382B]">
-                    MR. PAL
-                  </span>
-                  <span className="text-[10px] font-semibold tracking-[0.2em] text-[#5C655F] uppercase">
-                    CARE AT HOME
-                  </span>
-                </div>
+      {open ? (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div
+            className="animate-fade-rise absolute inset-0 bg-forest/40"
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />
+          <div
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="animate-fade-rise absolute inset-y-0 right-0 flex w-[86%] max-w-sm flex-col justify-between overflow-y-auto bg-paper-raised"
+          >
+            <div className="p-6">
+              <div className="flex items-start justify-between border-b border-rule pb-5">
+                <span className="font-display text-xl text-forest">MR. PAL</span>
                 <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-full hover:bg-[#F4EFE6] text-[#222522]"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close menu"
+                  className="-mr-2 flex h-10 w-10 cursor-pointer items-center justify-center text-ink-muted transition-settle hover:text-ink"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="h-5 w-5" />
                 </button>
               </div>
 
-              <nav className="flex flex-col gap-4 mt-6 text-base font-medium text-[#222522]">
-                <Link
-                  to="/"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 px-3 rounded-lg hover:bg-[#F4EFE6] transition-colors ${
-                    isActive('/') ? 'text-[#1A382B] font-bold bg-[#F4EFE6]' : ''
-                  }`}
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 px-3 rounded-lg hover:bg-[#F4EFE6] transition-colors ${
-                    isActive('/about') ? 'text-[#1A382B] font-bold bg-[#F4EFE6]' : ''
-                  }`}
-                >
-                  About Mr. Pal
-                </Link>
-                <div className="px-3 py-1">
-                  <span className="text-xs font-semibold text-[#8B948E] uppercase tracking-wider block mb-2">
-                    Care Services
-                  </span>
-                  <div className="pl-2 flex flex-col gap-2 text-sm text-[#3E4540]">
-                    <Link
-                      to="/services/patient-care"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="py-1 hover:text-[#D06A3B]"
-                    >
-                      Patient Care
-                    </Link>
-                    <Link
-                      to="/services/elder-care"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="py-1 hover:text-[#D06A3B]"
-                    >
-                      Elder Care
-                    </Link>
-                    <Link
-                      to="/services/dementia-care"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="py-1 hover:text-[#D06A3B]"
-                    >
-                      Dementia Care
-                    </Link>
-                    <Link
-                      to="/services/paralysis-care"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="py-1 hover:text-[#D06A3B]"
-                    >
-                      Paralysis Care
-                    </Link>
-                  </div>
-                </div>
-                <Link
-                  to="/team"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 px-3 rounded-lg hover:bg-[#F4EFE6] transition-colors ${
-                    isActive('/team') ? 'text-[#1A382B] font-bold bg-[#F4EFE6]' : ''
-                  }`}
-                >
-                  Our Team
-                </Link>
-                <Link
-                  to="/book-a-call"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 px-3 rounded-lg hover:bg-[#F4EFE6] transition-colors ${
-                    isActive('/book-a-call') ? 'text-[#1A382B] font-bold bg-[#F4EFE6]' : ''
-                  }`}
-                >
-                  Book a Call
-                </Link>
-                <Link
-                  to="/admin"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="py-2 px-3 rounded-lg hover:bg-[#F4EFE6] transition-colors text-xs text-[#5C655F] flex items-center gap-1.5 mt-2 border-t border-[#E8DFD3] pt-4"
-                >
-                  <ShieldCheck className="w-4 h-4 text-[#D06A3B]" />
-                  <span>Website Manager (CMS Demo)</span>
-                </Link>
+              <nav className="mt-6 flex flex-col">
+                {NAV_LINKS.map(link => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className="border-b border-rule-soft py-3.5 text-lead transition-settle hover:text-terracotta"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
+
+              <div className="mt-7">
+                <div className="docket-meta text-ink-faint">What we place</div>
+                <div className="mt-3 flex flex-col">
+                  {DEFAULT_SERVICES.map(service => (
+                    <Link
+                      key={service.id}
+                      to={`/services/${service.slug}`}
+                      className="py-2 text-small text-ink-muted transition-settle hover:text-terracotta"
+                    >
+                      {service.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="pt-6 border-t border-[#E8DFD3] space-y-3">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openWhatsApp();
-                }}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1A382B] text-white text-sm font-semibold shadow-sm"
-              >
-                <MessageCircle className="w-4 h-4 text-emerald-300" />
-                <span>WhatsApp Us</span>
-              </button>
-
+            <div className="space-y-3 border-t border-rule p-6">
               <Link
                 to="/book-a-call"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-[#1A382B] text-[#1A382B] text-sm font-semibold hover:bg-[#F4EFE6]"
+                className="flex w-full items-center justify-center rounded-sm border border-forest px-4 py-3 text-small font-semibold transition-settle hover:bg-paper-sunk"
               >
-                <PhoneCall className="w-4 h-4" />
-                <span>Book a Call</span>
+                Request a call
               </Link>
-
-              <p className="text-center text-[11px] text-[#8B948E] pt-2">
-                Available across Mumbai · {settings.phoneNumber}
-              </p>
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  openWhatsApp();
+                }}
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm bg-forest px-4 py-3 text-small font-semibold text-on-dark transition-settle hover:bg-forest-deep"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden />
+                WhatsApp us
+              </button>
+              <Link
+                to="/admin"
+                className="block pt-1 text-center text-meta text-ink-faint transition-settle hover:text-ink-muted"
+              >
+                Website manager (CMS demo)
+              </Link>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </>
   );
-};
+}

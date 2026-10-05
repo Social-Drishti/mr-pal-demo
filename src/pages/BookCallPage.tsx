@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { MessageCircle, CheckCircle2, PhoneCall, Shield, Clock, Heart } from 'lucide-react';
+import { MessageCircle, Phone } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
+import { Button, ButtonAnchor, Field, Rule, SectionHeader, inputClass } from '../components/ui';
+import { DEFAULT_DOCKET_FIELDS } from '../data/defaultData';
+
+const NEED_OPTIONS = DEFAULT_DOCKET_FIELDS.find(f => f.id === 'need')!.options;
+const AREA_OPTIONS = DEFAULT_DOCKET_FIELDS.find(f => f.id === 'locality')!.options;
+const ROLE_OPTIONS = DEFAULT_DOCKET_FIELDS.find(f => f.id === 'role')!.options;
 
 export const BookCallPage: React.FC = () => {
   const { openWhatsApp, settings } = useSite();
@@ -8,220 +14,261 @@ export const BookCallPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    email: '',
-    careRequired: 'Elder Care',
-    location: '',
-    message: ''
+    need: '',
+    role: '',
+    area: '',
+    message: '',
   });
+  const [prepared, setPrepared] = useState(false);
 
-  const [submitted, setSubmitted] = useState(false);
+  const canSubmit = Boolean(formData.name.trim() && formData.phone.trim());
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.phone) return;
-    setSubmitted(true);
+  const labelOf = (options: { id: string; label: string }[], id: string) =>
+    options.find(o => o.id === id)?.label ?? '';
+
+  // There is no backend behind this form. Rather than claim the request was
+  // received, it is composed and handed to WhatsApp — where it genuinely lands.
+  const composedMessage = [
+    `Hi MR. PAL, I would like to request care staff.`,
+    '',
+    `Name: ${formData.name}`,
+    `Phone: ${formData.phone}`,
+    formData.need ? `Who needs support: ${labelOf(NEED_OPTIONS, formData.need)}` : '',
+    formData.role ? `Looking for: ${labelOf(ROLE_OPTIONS, formData.role)}` : '',
+    formData.area ? `Area: ${labelOf(AREA_OPTIONS, formData.area)}` : '',
+    formData.message ? `\nNotes: ${formData.message}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!canSubmit) return;
+    setPrepared(true);
   };
 
+  const telHref = `tel:${settings.phoneNumber.replace(/[^\d+]/g, '')}`;
+
   return (
-    <div className="min-h-screen py-10 sm:py-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="max-w-2xl mx-auto text-center space-y-4 mb-12">
-          <span className="text-[11px] font-semibold text-[#C96F45] tracking-[0.2em] uppercase bg-[#E8D8C5]/60 px-3.5 py-1 rounded-full">
-            QUICK FAMILY CONSULTATION
-          </span>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#102A21] tracking-tight">
-            Let's talk about your requirement.
-          </h1>
-          <p className="text-sm sm:text-base text-[#5F6B64] leading-relaxed">
-            Fill out the details below. Our Mumbai care coordinator will call you back to understand your situation without any obligation.
-          </p>
-        </div>
+    <div className="bg-paper py-12 sm:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* ---- The form ---- */}
+          <div className="lg:col-span-7">
+            <SectionHeader
+              eyebrow="Request a call"
+              heading="Two details, then we call you."
+              lead="We will ask the rest on the phone. Nothing here is sent anywhere until you choose to send it."
+            />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Form Card */}
-          <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-10 border border-[#E2D7C7] shadow-sm">
-            {submitted ? (
-              <div className="text-center py-8 space-y-4 animate-in fade-in">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
-                  <CheckCircle2 className="w-9 h-9" />
-                </div>
-                <h3 className="font-display text-2xl font-bold text-[#102A21]">
-                  Thank you. We've received your request.
-                </h3>
-                <p className="text-sm text-[#5F6B64] max-w-md mx-auto leading-relaxed">
-                  Our coordinator will reach out to <span className="font-semibold text-[#102A21]">{formData.phone}</span> shortly to discuss care arrangements for your loved one.
-                </p>
-                <div className="pt-4 flex flex-col sm:flex-row justify-center gap-3">
-                  <button
-                    onClick={() => {
-                      const msg = `Hi, I just submitted a call request for ${formData.careRequired} in ${formData.location || 'Mumbai'}. My name is ${formData.name}.`;
-                      openWhatsApp(msg);
-                    }}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#102A21] hover:bg-[#173D2C] text-white text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
-                  >
-                    <MessageCircle className="w-4 h-4 text-emerald-400" />
-                    <span>Connect Immediately on WhatsApp</span>
-                  </button>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="px-6 py-3 rounded-full border border-[#E2D7C7] text-xs font-semibold text-[#5F6B64] hover:bg-[#F5F1E8]"
-                  >
-                    Submit Another Query
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#17211D] uppercase tracking-wider mb-1.5">
-                      Your Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Vikram Joshi"
-                      value={formData.name}
-                      onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-[#E2D7C7] focus:border-[#102A21] focus:ring-1 focus:ring-[#102A21] bg-[#F5F1E8]/50 text-sm outline-none transition-colors"
-                    />
+            <div className="sheet mt-10 p-6 sm:p-8">
+              {prepared ? (
+                <div className="py-4">
+                  <div className="docket-meta text-terracotta">Ready to send</div>
+                  <h2 className="mt-4 text-h3">
+                    Your request is written and ready.
+                  </h2>
+                  <p className="mt-3 text-body text-ink-muted">
+                    Sending it on WhatsApp puts it in front of the coordinator immediately —
+                    usually faster than waiting for a callback.
+                  </p>
+
+                  <div className="mt-7 border border-rule bg-paper p-4">
+                    <p className="whitespace-pre-line text-small text-ink">
+                      {composedMessage}
+                    </p>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-bold text-[#17211D] uppercase tracking-wider mb-1.5">
-                      Phone Number *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="e.g. +91 98200 XXXXX"
-                      value={formData.phone}
-                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-[#E2D7C7] focus:border-[#102A21] focus:ring-1 focus:ring-[#102A21] bg-[#F5F1E8]/50 text-sm outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-[#17211D] uppercase tracking-wider mb-1.5">
-                      Email Address (Optional)
-                    </label>
-                    <input
-                      type="email"
-                      placeholder="vikram@example.com"
-                      value={formData.email}
-                      onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-[#E2D7C7] focus:border-[#102A21] focus:ring-1 focus:ring-[#102A21] bg-[#F5F1E8]/50 text-sm outline-none transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-[#17211D] uppercase tracking-wider mb-1.5">
-                      Care Required *
-                    </label>
-                    <select
-                      value={formData.careRequired}
-                      onChange={e => setFormData({ ...formData, careRequired: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-[#E2D7C7] focus:border-[#102A21] focus:ring-1 focus:ring-[#102A21] bg-[#F5F1E8]/50 text-sm outline-none transition-colors cursor-pointer"
+                  <div className="mt-7 space-y-3">
+                    <Button
+                      variant="accent"
+                      className="w-full"
+                      onClick={() => openWhatsApp(composedMessage)}
                     >
-                      <option value="Patient Care">Patient Care</option>
-                      <option value="Elder Care">Elder Care</option>
-                      <option value="Dementia Care">Dementia Care</option>
-                      <option value="Paralysis Care">Paralysis Care</option>
-                      <option value="Caregiver / Attendant">Caregiver / Attendant</option>
-                      <option value="Maids / Home Help">Maids / Home Help</option>
-                    </select>
+                      <MessageCircle className="h-4 w-4" aria-hidden />
+                      Send on WhatsApp
+                    </Button>
+                    <Button variant="outline" className="w-full" onClick={() => setPrepared(false)}>
+                      Edit the request
+                    </Button>
                   </div>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-7">
+                  <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
+                    <Field label="Your name" htmlFor="name">
+                      <input
+                        id="name"
+                        type="text"
+                        required
+                        autoComplete="name"
+                        placeholder="e.g. Vikram Joshi"
+                        value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        className={inputClass}
+                      />
+                    </Field>
+                    <Field label="Phone number" htmlFor="phone">
+                      <input
+                        id="phone"
+                        type="tel"
+                        required
+                        autoComplete="tel"
+                        placeholder="e.g. 98200 12345"
+                        value={formData.phone}
+                        onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                        className={inputClass}
+                      />
+                    </Field>
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-[#17211D] uppercase tracking-wider mb-1.5">
-                    Location in Mumbai
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Andheri West, Bandra, Powai, Borivali, Chembur, Worli..."
-                    value={formData.location}
-                    onChange={e => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#E2D7C7] focus:border-[#102A21] focus:ring-1 focus:ring-[#102A21] bg-[#F5F1E8]/50 text-sm outline-none transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-[#17211D] uppercase tracking-wider mb-1.5">
-                    Brief Care Requirement / Notes
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Describe your loved one's age, medical condition, hours needed (day, night, 24/7)..."
-                    value={formData.message}
-                    onChange={e => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-[#E2D7C7] focus:border-[#102A21] focus:ring-1 focus:ring-[#102A21] bg-[#F5F1E8]/50 text-sm outline-none transition-colors resize-none"
-                  />
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 px-6 rounded-full bg-[#102A21] hover:bg-[#173D2C] text-white font-semibold text-xs tracking-wider uppercase shadow-xs transition-smooth cursor-pointer"
+                  <Field
+                    label="Who needs support"
+                    htmlFor="need"
+                    hint="Not sure? Leave this blank and we will work it out on the call."
                   >
-                    Request a Call
-                  </button>
-                </div>
+                    <select
+                      id="need"
+                      value={formData.need}
+                      onChange={e => setFormData({ ...formData, need: e.target.value })}
+                      className={`${inputClass} cursor-pointer`}
+                    >
+                      <option value="">Please choose…</option>
+                      {NEED_OPTIONS.map(option => (
+                        <option key={option.id} value={option.id}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
 
-                <p className="text-[11px] text-[#5F6B64] text-center pt-2">
-                  🔒 We respect your family's privacy. No spam. No unsolicited marketing.
-                </p>
+                  <div className="grid grid-cols-1 gap-7 sm:grid-cols-2">
+                    <Field label="Whom would you like?" htmlFor="role">
+                      <select
+                        id="role"
+                        value={formData.role}
+                        onChange={e => setFormData({ ...formData, role: e.target.value })}
+                        className={`${inputClass} cursor-pointer`}
+                      >
+                        <option value="">No preference</option>
+                        {ROLE_OPTIONS.map(option => (
+                          <option key={option.id} value={option.id}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
 
-              </form>
-            )}
+                    <Field label="Area in Mumbai" htmlFor="area">
+                      <select
+                        id="area"
+                        value={formData.area}
+                        onChange={e => setFormData({ ...formData, area: e.target.value })}
+                        className={`${inputClass} cursor-pointer`}
+                      >
+                        <option value="">Please choose…</option>
+                        {AREA_OPTIONS.map(option => (
+                          <option key={option.id} value={option.id}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  </div>
+
+                  <Field
+                    label="Anything we should know"
+                    htmlFor="message"
+                    hint="Optional. Timings, duties, anything that is non-negotiable."
+                  >
+                    <textarea
+                      id="message"
+                      rows={3}
+                      placeholder="e.g. My mother is 78 and needs someone 6am–10am for bathing and meals. She is diabetic."
+                      value={formData.message}
+                      onChange={e => setFormData({ ...formData, message: e.target.value })}
+                      className={`${inputClass} resize-y`}
+                    />
+                  </Field>
+
+                  <Rule />
+                  <Button type="submit" variant="primary" disabled={!canSubmit}>
+                    Prepare my request
+                  </Button>
+
+                  <p className="text-small text-ink-muted">
+                    Nothing is sent from this page on its own. The next step is always you
+                    choosing to send it.
+                  </p>
+                </form>
+              )}
+            </div>
           </div>
 
-          {/* Right info side */}
-          <div className="lg:col-span-4 space-y-4">
-            
-            <div className="bg-[#EFE9DD] rounded-3xl p-6 border border-[#E2D7C7] space-y-4">
-              <h3 className="font-display text-lg font-bold text-[#102A21]">
-                Prefer instant messaging?
-              </h3>
-              <p className="text-xs text-[#5F6B64] leading-relaxed">
-                You can chat directly with Mr. Pal's care coordinator right now. Quick, friendly, and informal.
-              </p>
-              <button
-                onClick={() => openWhatsApp('Hi, I would like to enquire about home-care services in Mumbai.')}
-                className="w-full py-3 px-4 rounded-full bg-[#173D2C] hover:bg-[#102A21] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+          {/* ---- What to expect ---- */}
+          <aside className="lg:col-span-5">
+            <div className="border border-ink bg-paper-raised p-7">
+              <div className="docket-meta text-terracotta">What to expect</div>
+              <h2 className="mt-4 text-h3">Straight answers, up front.</h2>
+
+              <dl className="mt-7 space-y-6">
+                <div className="border-t border-rule pt-5">
+                  <dt className="text-small font-semibold">Who calls you</dt>
+                  <dd className="mt-1 text-small text-ink-muted">
+                    A coordinator, not a call centre. Usually the same person again if you
+                    need us twice.
+                  </dd>
+                </div>
+                <div className="border-t border-rule pt-5">
+                  <dt className="text-small font-semibold">When</dt>
+                  <dd className="mt-1 text-small text-ink-muted">
+                    {settings.officeHours}. Outside those hours we reply first thing next
+                    morning.
+                  </dd>
+                </div>
+                <div className="border-t border-rule pt-5">
+                  <dt className="text-small font-semibold">What it costs</dt>
+                  <dd className="mt-1 text-small text-ink-muted">
+                    Nothing for the first conversation, and no obligation afterwards. Charges
+                    depend on hours, duties and locality — we quote after we understand the
+                    routine.
+                  </dd>
+                </div>
+                <div className="border-t border-rule pt-5">
+                  <dt className="text-small font-semibold">Your details</dt>
+                  <dd className="mt-1 text-small text-ink-muted">
+                    Used to arrange the placement and nothing else. No marketing list, no
+                    third parties.
+                  </dd>
+                </div>
+              </dl>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              <ButtonAnchor href={telHref} variant="primary" className="w-full">
+                <Phone className="h-4 w-4" aria-hidden />
+                {settings.phoneNumber}
+              </ButtonAnchor>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => openWhatsApp(settings.defaultWhatsAppMessage)}
               >
-                <MessageCircle className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
-                <span>WhatsApp Us Directly</span>
-              </button>
+                <MessageCircle className="h-4 w-4 text-terracotta" aria-hidden />
+                Message us instead
+              </Button>
+              <p className="text-center text-small text-ink-faint">
+                Or email{' '}
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="underline decoration-terracotta underline-offset-4 transition-settle hover:decoration-2"
+                >
+                  {settings.email}
+                </a>
+              </p>
             </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-[#E2D7C7] space-y-3">
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-[#C96F45]" />
-                <div>
-                  <h4 className="text-xs font-bold text-[#102A21]">Prompt Response</h4>
-                  <p className="text-[11px] text-[#5F6B64]">Calls returned within 15–30 minutes</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 pt-2 border-t border-[#F0EAE1]">
-                <Shield className="w-5 h-5 text-[#102A21]" />
-                <div>
-                  <h4 className="text-xs font-bold text-[#102A21]">Mumbai Vetted Care</h4>
-                  <p className="text-[11px] text-[#5F6B64]">Reliable background checks on staff</p>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
+          </aside>
         </div>
-
       </div>
     </div>
   );

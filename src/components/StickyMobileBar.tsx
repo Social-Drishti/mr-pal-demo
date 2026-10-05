@@ -1,48 +1,70 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { MessageCircle, PhoneCall } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { MessageCircle, Phone } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
+import { DEFAULT_SERVICES } from '../data/defaultData';
 
-export const StickyMobileBar: React.FC = () => {
-  const { openWhatsApp } = useSite();
+/** How far the visitor has to scroll before the bar appears on the homepage. */
+const REVEAL_AFTER = 260;
+
+export function StickyMobileBar() {
+  const { openWhatsApp, settings } = useSite();
   const location = useLocation();
+  const [shown, setShown] = useState(false);
 
-  // Determine contextual message if on a service page
-  let contextualMessage: string | undefined = undefined;
-  if (location.pathname === '/services/elder-care') {
-    contextualMessage = 'Hi, I would like to enquire about Elder Care.';
-  } else if (location.pathname === '/services/patient-care') {
-    contextualMessage = 'Hi, I would like to enquire about Patient Care.';
-  } else if (location.pathname === '/services/dementia-care') {
-    contextualMessage = 'Hi, I would like to enquire about Dementia Care.';
-  } else if (location.pathname === '/services/paralysis-care') {
-    contextualMessage = 'Hi, I would like to enquire about Paralysis Care.';
-  }
+  const isHome = location.pathname === '/';
 
-  // Hide on admin routes so admin has full screen
-  if (location.pathname.startsWith('/admin')) {
-    return null;
-  }
+  useEffect(() => {
+    if (!isHome) {
+      setShown(true);
+      return;
+    }
+
+    // On the homepage the bar stays out of the way until the visitor has
+    // actually started reading, so the hero is not competing with it. Scrolling
+    // back up hides it again.
+    const onScroll = () => setShown(window.scrollY > REVEAL_AFTER);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isHome]);
+
+  if (location.pathname.startsWith('/admin')) return null;
+
+  const currentService = DEFAULT_SERVICES.find(
+    s => location.pathname === `/services/${s.slug}`,
+  );
+  const message = currentService
+    ? `Hi, I would like to enquire about ${currentService.name}.`
+    : undefined;
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#F5F1E8]/95 backdrop-blur-md border-t border-[#E2D7C7] p-2.5 px-4 shadow-lg">
-      <div className="grid grid-cols-2 gap-2 max-w-md mx-auto">
-        <Link
-          to="/book-a-call"
-          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#102A21] text-white text-xs font-semibold tracking-wide shadow-xs active:scale-[0.98] transition-transform truncate"
+    <div
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper px-4 py-2.5 transition-transform duration-300 ease-settle motion-reduce:transition-none md:hidden ${
+        shown ? 'translate-y-0' : 'translate-y-full'
+      }`}
+      // Keeps the bar out of reach of assistive tech until it is on screen.
+      aria-hidden={!shown}
+      inert={!shown}
+    >
+      <div className="mx-auto grid max-w-md grid-cols-2 gap-2">
+        <a
+          href={`tel:${settings.phoneNumber.replace(/[^\d+]/g, '')}`}
+          tabIndex={shown ? 0 : -1}
+          className="flex items-center justify-center gap-2 rounded-sm border border-forest px-3 py-3 text-small font-semibold text-forest"
         >
-          <PhoneCall className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Book a Call</span>
-        </Link>
-
+          <Phone className="h-4 w-4 shrink-0" aria-hidden />
+          Call now
+        </a>
         <button
-          onClick={() => openWhatsApp(contextualMessage)}
-          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-full bg-[#173D2C] hover:bg-[#102A21] text-white text-xs font-bold tracking-wide shadow-xs active:scale-[0.98] transition-transform truncate cursor-pointer"
+          onClick={() => openWhatsApp(message)}
+          tabIndex={shown ? 0 : -1}
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-sm bg-forest px-3 py-3 text-small font-semibold text-on-dark"
         >
-          <MessageCircle className="w-4 h-4 shrink-0 text-emerald-400 fill-emerald-400/20" />
-          <span className="truncate">WhatsApp</span>
+          <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
+          WhatsApp
         </button>
       </div>
     </div>
   );
-};
+}

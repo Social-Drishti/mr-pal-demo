@@ -1,170 +1,171 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, MessageCircle, PhoneCall, Heart, Users, Shield, Smile } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import { useSite } from '../context/SiteContext';
+import { PHOTOS } from '../data/images';
+import { Photo } from '../components/Photo';
+import { Button, ButtonLink, ButtonAnchor, Rule, SectionHeader } from '../components/ui';
+import { DEFAULT_VERIFY_STEPS } from '../data/defaultData';
 
 export const AboutPage: React.FC = () => {
-  const { openWhatsApp } = useSite();
+  const { settings, openWhatsApp } = useSite();
+  const telHref = `tel:${settings.phoneNumber.replace(/[^\d+]/g, '')}`;
 
   return (
-    <div className="min-h-screen py-10 sm:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Hero Section */}
-        <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
-          <span className="text-[11px] font-semibold text-[#C96F45] tracking-[0.2em] uppercase bg-[#E8D8C5]/60 px-3.5 py-1 rounded-full">
-            ABOUT MR. PAL
-          </span>
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#102A21] tracking-tight">
-            Care is personal.
-          </h1>
-          <p className="text-base sm:text-lg text-[#5F6B64] leading-relaxed pt-2">
-            We started Mr. Pal with an understanding of what Mumbai families go through when an aging parent or recovering loved one needs help at home. Finding someone reliable, patient, and kind should never feel difficult.
-          </p>
-        </div>
-
-        {/* Story & Indian Family Image */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center bg-white rounded-3xl p-6 sm:p-10 lg:p-12 border border-[#E2D7C7] shadow-xs mb-16">
-          <div className="lg:col-span-6 space-y-5">
-            <h2 className="font-display text-2xl sm:text-3xl font-normal text-[#102A21]">
-              Supporting families across Mumbai with genuine care.
-            </h2>
-            <p className="text-sm sm:text-base text-[#5F6B64] leading-relaxed">
-              Mr. Pal is a dedicated home-care assistance initiative operating throughout Mumbai. We connect families with trained, verified, and respectful home nurses, caregivers, patient attendants, and home helpers.
-            </p>
-            <p className="text-sm sm:text-base text-[#5F6B64] leading-relaxed">
-              Whether your family requires daytime companionship for a senior parent, round-the-clock bedside nursing for a post-surgery patient, or patient assistance for paralysis recovery, we tailor the support specifically to your loved one’s routine.
-            </p>
-            <div className="pt-2 flex flex-wrap gap-4">
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#102A21]">
-                <Shield className="w-4 h-4 text-[#C96F45]" />
-                <span>Verified Personnel</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#102A21]">
-                <Heart className="w-4 h-4 text-[#C96F45]" />
-                <span>Dignified Care</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#102A21]">
-                <Users className="w-4 h-4 text-[#C96F45]" />
-                <span>Dedicated Coordinator</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-6">
-            <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-[#E2D7C7] shadow-md bg-[#E8D8C5]">
-              <img
-                src="/src/assets/images/care_family_multigen_1791178289971.jpg"
-                alt="Indian family together at home in Mumbai"
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Our Approach (Understand, Support, Connect, Care) */}
-        <div className="mb-16">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-[11px] font-semibold text-[#C96F45] tracking-[0.2em] uppercase block mb-1">
-              THE MR. PAL PROMISE
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl font-normal text-[#102A21]">
-              Our Approach
-            </h2>
-            <p className="text-xs sm:text-sm text-[#5F6B64] mt-2">
-              Four principles that guide every family relationship we build.
+    <>
+      {/* ---- Header ---- */}
+      <section className="bg-paper pt-12 pb-14 sm:pt-16 sm:pb-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <div className="docket-meta text-terracotta">About MR. PAL</div>
+            <h1 className="mt-6 text-display">
+              We started by hiring help
+              <br />
+              <span className="italic text-terracotta">for our own father.</span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-lead text-ink-muted">
+              The agency that turned up was vague about who the person was, what they had
+              actually done, and what would happen if they were not right. We are the
+              opposite of that: we check first, we write it down, and we replace it if the
+              fit is wrong.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <div className="bg-white rounded-2xl p-6 border border-[#E2D7C7] shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#E8D8C5]/60 text-[#C96F45] flex items-center justify-center font-bold font-mono text-sm">
-                01
-              </div>
-              <h3 className="font-display text-lg font-bold text-[#102A21]">Understand</h3>
-              <p className="text-xs text-[#5F6B64] leading-relaxed">
-                We take time to listen to the family, medical history, lifestyle routines, and emotional nuances before making recommendations.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-[#E2D7C7] shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#173D2C]/10 text-[#102A21] flex items-center justify-center font-bold font-mono text-sm">
-                02
-              </div>
-              <h3 className="font-display text-lg font-bold text-[#102A21]">Support</h3>
-              <p className="text-xs text-[#5F6B64] leading-relaxed">
-                We help you decide whether a nurse, caregiver, or patient attendant matches the exact daily requirements.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-[#E2D7C7] shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#E8D8C5]/60 text-[#C96F45] flex items-center justify-center font-bold font-mono text-sm">
-                03
-              </div>
-              <h3 className="font-display text-lg font-bold text-[#102A21]">Connect</h3>
-              <p className="text-xs text-[#5F6B64] leading-relaxed">
-                We introduce dependable, vetted staff suited to the home environment, language preferences, and care expectations.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-[#E2D7C7] shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#173D2C]/10 text-[#102A21] flex items-center justify-center font-bold font-mono text-sm">
-                04
-              </div>
-              <h3 className="font-display text-lg font-bold text-[#102A21]">Care</h3>
-              <p className="text-xs text-[#5F6B64] leading-relaxed">
-                Ongoing follow-ups, emergency continuity, and a reliable single point of contact for the family at all times.
-              </p>
-            </div>
-
-          </div>
         </div>
+      </section>
 
-        {/* Why Home Care */}
-        <div className="bg-[#EFE9DD] rounded-3xl p-6 sm:p-10 lg:p-12 border border-[#E2D7C7] mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            <div className="lg:col-span-6 space-y-4">
-              <span className="text-[11px] font-semibold text-[#C96F45] uppercase tracking-wider">
-                COMFORT & HEALING
-              </span>
-              <h2 className="font-display text-3xl font-normal text-[#102A21]">
-                Why Home Care?
-              </h2>
-              <p className="text-sm text-[#5F6B64] leading-relaxed">
-                Healing and aging happen best in familiar surroundings. When surrounded by their own room, family memories, cherished tea cups, and familiar sounds, seniors feel more relaxed and recover faster.
-              </p>
-              <p className="text-sm text-[#5F6B64] leading-relaxed">
-                Home care preserves individual independence while giving family members freedom from anxiety. You get to be a loving son, daughter, or spouse—while our care staff manages the challenging bedside routines.
-              </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => openWhatsApp('Hi, I would like to discuss home care options for my family.')}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#102A21] hover:bg-[#173D2C] text-white text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
-                >
-                  <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Talk with Mr. Pal</span>
-                </button>
-              </div>
-            </div>
-
+      {/* ---- The story ---- */}
+      <section className="bg-paper-sunk py-16 sm:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-6">
-              <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-[#E2D7C7] shadow-md bg-white">
-                <img
-                  src="/src/assets/images/holding_hands_care_1791178299720.jpg"
-                  alt="Holding hands with warmth and compassion"
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
+              <div className="aspect-[4/3] w-full overflow-hidden bg-sand">
+                <Photo
+                  {...PHOTOS.familyCare}
+                  alt="A family at home in Mumbai"
+                  className="h-full w-full object-cover"
                 />
               </div>
             </div>
 
+            <div className="lg:col-span-6">
+              <div className="docket-meta text-terracotta">What we do</div>
+              <h2 className="mt-4 text-h2">
+                A placement agency, not a medical provider.
+              </h2>
+              <div className="mt-6 space-y-4 text-body text-ink-muted">
+                <p>
+                  MR. PAL finds, checks and places independent care staff and home helpers
+                  into homes across Mumbai. We do not employ a hospital ward and we are not
+                  a nursing home.
+                </p>
+                <p>
+                  What we do own completely is the thing families actually complain about:
+                  not knowing who is about to walk through their door. So the checks are
+                  ours, the matching is ours, and so is the phone number you call when it
+                  is not right.
+                </p>
+              </div>
+
+              <Rule className="mt-8" />
+              <dl className="mt-6 grid grid-cols-2 gap-6">
+                <div>
+                  <dt className="text-small font-semibold">Founded</dt>
+                  <dd className="mt-1 text-small text-ink-muted">In Mumbai, by a family</dd>
+                </div>
+                <div>
+                  <dt className="text-small font-semibold">Areas</dt>
+                  <dd className="mt-1 text-small text-ink-muted">12 across the city</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
+      </section>
 
-      </div>
-    </div>
+      {/* ---- How we check ---- */}
+      <section className="bg-paper py-16 sm:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow={settings.verifyEyebrow}
+            heading={settings.verifyHeading}
+            lead={settings.verifyIntro}
+          />
+
+          <div className="mt-12 border-t-2 border-ink">
+            {DEFAULT_VERIFY_STEPS.map((step, index) => (
+              <div key={step.title} className="grid grid-cols-1 gap-3 border-b border-rule py-7 sm:grid-cols-12 sm:gap-8">
+                <span className="docket-meta tabular text-ink-faint sm:col-span-1">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-h3 sm:col-span-4">{step.title}</h3>
+                <p className="text-body text-ink-muted sm:col-span-7">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---- Why home, and who to talk to ---- */}
+      <section className="bg-forest py-16 sm:py-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-6">
+              <div className="docket-meta text-terracotta">Why home</div>
+              <h2 className="mt-4 text-h2 text-on-dark">
+                Most people do better where they already are.
+              </h2>
+              <div className="mt-6 space-y-4 text-body text-on-dark-muted">
+                <p>
+                  Familiar rooms, familiar light, their own bed. Recovery is easier at home
+                  and most families can tell the difference within a fortnight.
+                </p>
+                <p>
+                  It is also why the last few hours of a placement matter so much. We plan
+                  for them.
+                </p>
+              </div>
+
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  variant="accent"
+                  onClick={() => openWhatsApp(settings.defaultWhatsAppMessage)}
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden />
+                  Talk to us
+                </Button>
+                <ButtonLink to="/team" variant="onDark">
+                  Meet the team
+                </ButtonLink>
+              </div>
+            </div>
+
+            <figure className="lg:col-span-6">
+              <div className="aspect-[4/3] w-full overflow-hidden bg-forest-mid">
+                <Photo
+                  {...PHOTOS.holdingHands}
+                  alt="Holding hands at home"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      {/* ---- Contact ---- */}
+      <section className="bg-paper py-14 sm:py-16">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-xl">
+              <div className="docket-meta text-terracotta">Next step</div>
+              <h2 className="mt-4 text-h2">Tell us what your home needs.</h2>
+              <p className="mt-4 text-lead text-ink-muted">{settings.responseCommitment}</p>
+            </div>
+            <ButtonAnchor href={telHref} variant="outline" className="shrink-0">
+              {settings.phoneNumber}
+            </ButtonAnchor>
+          </div>
+        </div>
+      </section>
+    </>
   );
 };

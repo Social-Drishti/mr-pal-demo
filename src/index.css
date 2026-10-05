@@ -1,52 +1,201 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   MR. PAL — Design tokens
+   Direction: "Service Request Docket".
+   A well-printed service-request form: warm paper stock, hairline rules,
+   numbered fields, margin metadata. Nothing decorative.
+   ========================================================================== */
+
 @theme {
-  --font-serif: 'DM Serif Display', 'Playfair Display', Georgia, serif;
-  --font-sans: 'Manrope', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-script: 'Caveat', cursive;
-  --color-brand-bg: #F5F1E8;
-  --color-brand-dark: #102A21;
-  --color-brand-green: #173D2C;
-  --color-brand-accent: #C96F45;
-  --color-brand-secondary: #E8D8C5;
-  --color-brand-text: #17211D;
-  --color-brand-border: #E2D7C7;
-  --color-brand-muted: #5F6B64;
+  /* ---- Type: two families ----
+     Georgia carries h1 and h2 only. It is a large, high-contrast face, so
+     spreading it down the hierarchy makes the page read as a font sample
+     instead of as headings. Everything below h2 is Manrope. */
+  --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: Georgia, 'Times New Roman', Times, serif;
+
+  /* ---- Palette: warm paper. One scale, no second brand. ---- */
+  --color-paper: #f5f1e8;          /* page */
+  --color-paper-raised: #faf7f2;   /* panels, docket sheet */
+  --color-paper-sunk: #efe9dd;     /* alternating band */
+  --color-ink: #17211d;            /* primary text */
+  --color-ink-muted: #5f6b64;      /* body */
+  --color-ink-faint: #8a958e;      /* metadata */
+  --color-forest: #102a21;         /* brand dark */
+  --color-forest-mid: #173d2c;     /* raised surface on dark */
+  --color-forest-deep: #12281e;    /* hover on dark */
+  --color-terracotta: #c96f45;     /* single accent */
+  --color-terracotta-deep: #b55f37;/* accent hover / focus */
+  --color-sand: #e8d8c5;           /* fill, chips */
+
+  /* The one third-party brand colour in the system. Off-palette, and only ever
+     used on the WhatsApp button, because a visitor recognising it instantly is
+     worth more than the brand staying internally consistent. */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-deep: #20bd5a;
+  --color-whatsapp-ink: #0a2616;
+  --color-rule: #e2d7c7;           /* hairline */
+  --color-rule-soft: #ede5d8;      /* faintest hairline */
+  --color-on-dark: #faf7f2;        /* text on forest */
+  --color-on-dark-muted: #a9b5ac;  /* secondary text on forest */
+
+  /* ---- Type ramp: fluid, so no more one-off [70px] ---- */
+  --text-display: clamp(2.25rem, 1.3rem + 4vw, 4rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-h1: clamp(2rem, 1.45rem + 2.4vw, 3.25rem);
+  --text-h1--line-height: 1.08;
+  --text-h1--letter-spacing: -0.015em;
+
+  --text-h2: clamp(1.75rem, 1.35rem + 1.8vw, 2.75rem);
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: -0.01em;
+
+  --text-h3: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-h3--line-height: 1.25;
+
+  --text-lead: 1.0625rem;
+  --text-lead--line-height: 1.65;
+
+  --text-body: 1rem;               /* was 12px across the site */
+  --text-body--line-height: 1.7;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+
+  --text-meta: 0.75rem;            /* labels only, never body copy */
+  --text-meta--line-height: 1.5;
+
+  /* ---- Radius: demoted. Shape stops being decoration. ---- */
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
+  --radius-4xl: 8px;
+
+  /* ---- Motion: one idea. Things settle. Nothing bounces. ---- */
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-rule-draw: rule-draw 700ms var(--ease-settle) forwards;
+  --animate-fade-rise: fade-rise 420ms var(--ease-settle) forwards;
+
+  @keyframes rule-draw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  @keyframes fade-rise {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: none; }
+  }
 }
 
-body {
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Georgia is reserved for the two top heading levels. h3 and h4 stay in
+     Manrope and take their weight from the sans face instead, so a third level
+     never gets mistaken for a page title. */
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  h3, h4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection {
+    background-color: var(--color-sand);
+    color: var(--color-forest);
+  }
+
+  /* Every interactive element gets a visible ring. There is no
+     unstyled focus state anywhere in this project. */
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta-deep);
+    outline-offset: 2px;
+  }
+
+  /* Input fields are ruled lines, not rounded boxes. */
+  input, select, textarea {
+    font-family: inherit;
+    font-size: var(--text-body);
+  }
+}
+
+/* ============================================================================
+   Docket utilities
+   ========================================================================== */
+
+/* Margin metadata: the numbered, letter-spaced gutter text of a printed form.
+   Set in Manrope with tabular figures rather than adding a second mono face. */
+@utility docket-meta {
   font-family: var(--font-sans);
-  background-color: var(--color-brand-bg);
-  color: var(--color-brand-text);
-  overflow-x: hidden;
+  font-size: var(--text-meta);
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
-h1, h2, h3, .font-display {
-  font-family: var(--font-serif);
+@utility tabular {
+  font-variant-numeric: tabular-nums;
 }
 
-.font-handwriting {
-  font-family: var(--font-script);
+/* The sheet: a raised panel sitting on paper stock. */
+@utility sheet {
+  background-color: var(--color-paper-raised);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-lg);
 }
 
-/* Custom smooth transitions */
-.transition-smooth {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+/* A rubber stamp — the one place the accent fills a whole shape. */
+@utility stamp {
+  background-color: var(--color-terracotta);
+  color: var(--color-on-dark);
+  border-radius: var(--radius-sm);
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
+@utility transition-settle {
+  transition-property: color, background-color, border-color, opacity, transform;
+  transition-timing-function: var(--ease-settle);
+  transition-duration: 200ms;
 }
-::-webkit-scrollbar-track {
-  background: #F5F1E8;
-}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--color-paper); }
 ::-webkit-scrollbar-thumb {
-  background: #D8CCBD;
-  border-radius: 4px;
+  background: var(--color-rule);
+  border: 3px solid var(--color-paper);
+  border-radius: 9999px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #BFB09F;
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-faint); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
-
-

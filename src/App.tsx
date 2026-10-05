@@ -1,6 +1,5 @@
 /**
- * @license
- * SPDX-License-Identifier: Apache-2.0
+ * MR. PAL — care staff and home help, Mumbai.
  */
 
 import React from 'react';
@@ -9,10 +8,11 @@ import { SiteProvider } from './context/SiteContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { StickyMobileBar } from './components/StickyMobileBar';
-import { WhatsAppModal } from './components/WhatsAppModal';
+import { WhatsAppSheet } from './components/WhatsAppSheet';
 import { ScrollToTop } from './components/ScrollToTop';
 
 import { HomePage } from './pages/HomePage';
+import { ServicesPage } from './pages/ServicesPage';
 import { ServiceDetailPage } from './pages/ServiceDetailPage';
 import { AboutPage } from './pages/AboutPage';
 import { TeamPage } from './pages/TeamPage';
@@ -26,13 +26,14 @@ const AppLayout: React.FC = () => {
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAF7F2] text-[#222522]">
+    <div className="flex min-h-screen flex-col bg-paper text-ink">
       <ScrollToTop />
       {!isAdmin && <Navbar />}
 
-      <main className={`flex-1 ${!isAdmin ? 'pb-16 md:pb-0' : ''}`}>
+      <main className={`flex-1 ${!isAdmin ? 'pb-[72px] md:pb-0' : ''}`}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/services" element={<ServicesPage />} />
           <Route path="/services/:slug" element={<ServiceDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/team" element={<TeamPage />} />
@@ -45,7 +46,7 @@ const AppLayout: React.FC = () => {
 
       {!isAdmin && <Footer />}
       {!isAdmin && <StickyMobileBar />}
-      <WhatsAppModal />
+      <WhatsAppSheet />
     </div>
   );
 };

@@ -1,75 +1,99 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { useSite } from '../context/SiteContext';
+import { Rule } from '../components/ui';
+
+const SECTIONS = [
+  {
+    title: 'What MR. PAL does',
+    body: [
+      'MR. PAL is a placement agency. We find, verify and introduce independent care staff and home helpers to families in Mumbai. The person who works in your home is employed by you, or by a partner agency — not by MR. PAL.',
+      'We are not a medical provider. We do not diagnose, treat, or supply clinical care beyond the agreed duties of the person placed with you.',
+    ],
+  },
+  {
+    title: 'How we verify',
+    body: [
+      'Before any introduction we check government photo ID and a current address proof. We speak to two references and record what they actually said. We hold a structured conversation about the duties relevant to your situation.',
+      'Verification reduces risk. It does not eliminate it, and no agency can honestly claim otherwise.',
+    ],
+  },
+  {
+    title: 'Responsibilities at your home',
+    body: [
+      'Duties, hours, days off and payment terms are agreed in writing between you and the person placed, before the placement begins. Keep that agreement. It is the clearest protection for both sides.',
+      'MR. PAL is a point of contact for the introduction, for follow-up after the first week, and for arranging cover when someone is unwell.',
+    ],
+  },
+  {
+    title: 'Charges and cancellation',
+    body: [
+      'We quote only after we understand the routine, because hours, duties and locality all affect the number. Any fee is disclosed before you commit, in writing.',
+      'There is no lock-in. The first few days are a trial, and if the fit is wrong we replace the person. You are not asked to argue for it.',
+    ],
+  },
+  {
+    title: 'Your details',
+    body: [
+      'Information you send is used to arrange the placement and to contact you about it. It is not sold, and it is not added to a marketing list.',
+      'You can ask us to delete what we hold about you at any time.',
+    ],
+  },
+];
 
 export const TermsPage: React.FC = () => {
+  const { settings } = useSite();
+
   return (
-    <div className="min-h-screen py-10 sm:py-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="mb-6">
+    <div className="bg-paper py-12 sm:py-20">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="docket-meta text-terracotta">Terms &amp; plain English</div>
+        <h1 className="mt-5 text-h1">What we agree to, and what we do not.</h1>
+        <p className="mt-5 text-lead text-ink-muted">
+          Written to be read, not to be agreed to without reading. Last reviewed: October 2026.
+        </p>
+
+        <Rule className="mt-10" />
+
+        <div className="mt-10 space-y-10">
+          {SECTIONS.map((section, index) => (
+            <section key={section.title}>
+              <div className="flex items-baseline gap-4">
+                <span className="docket-meta tabular text-ink-faint">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h2 className="text-h3">{section.title}</h2>
+              </div>
+              <div className="mt-4 space-y-3 pl-10">
+                {section.body.map(paragraph => (
+                  <p key={paragraph} className="text-body text-ink-muted">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <Rule className="mt-12" />
+
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-small text-ink-muted">
+            Something unclear?{' '}
+            <a
+              href={`mailto:${settings.email}`}
+              className="underline decoration-terracotta underline-offset-4 transition-settle hover:decoration-2"
+            >
+              {settings.email}
+            </a>
+          </p>
           <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5C655F] hover:text-[#1A382B] transition-colors"
+            to="/#request"
+            className="text-small font-semibold underline decoration-terracotta underline-offset-[6px] transition-settle hover:decoration-2"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Home</span>
+            Build a request
           </Link>
         </div>
-
-        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E8DFD3] shadow-xs space-y-6">
-          
-          <div className="border-b border-[#E8DFD3] pb-6">
-            <span className="text-xs font-bold text-[#B8572A] uppercase tracking-wider">
-              Transparency & Care
-            </span>
-            <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#1A382B] mt-1">
-              Terms & Care Policy
-            </h1>
-            <p className="text-xs text-[#7A887E] mt-1">
-              MR. PAL — Care at Home · Mumbai, India
-            </p>
-          </div>
-
-          <div className="space-y-4 text-sm text-[#4E5651] leading-relaxed">
-            <h3 className="font-display text-lg font-bold text-[#1A382B]">
-              1. Non-Medical Home Care Scope
-            </h3>
-            <p>
-              Mr. Pal provides non-clinical supportive care, elder companion care, patient assistance, and home support human resources. While our home nurses follow physician-prescribed orders, Mr. Pal does not provide primary medical diagnoses or hospital-level intensive emergency care. In medical emergencies, families must always contact emergency medical services or their primary hospital.
-            </p>
-
-            <h3 className="font-display text-lg font-bold text-[#1A382B]">
-              2. Staff Verification & Conduct
-            </h3>
-            <p>
-              All caregivers, nurses, attendants, and home helpers placed through Mr. Pal undergo identity verification and basic background screening. We maintain strict codes of conduct emphasizing respectful language, dignity, hygiene, and patient privacy.
-            </p>
-
-            <h3 className="font-display text-lg font-bold text-[#1A382B]">
-              3. Family Privacy & Data Protection
-            </h3>
-            <p>
-              We treat patient medical records, family contact details, and home addresses with absolute confidentiality. Information collected through our website or phone consultations is solely used to evaluate and coordinate care requirements.
-            </p>
-
-            <h3 className="font-display text-lg font-bold text-[#1A382B]">
-              4. Service Adjustments & Support
-            </h3>
-            <p>
-              We understand family situations evolve. If a care recipient requires altered hours, or if a caregiver profile is not an ideal personality match, our care coordinators assist with smooth adjustments and backup arrangements.
-            </p>
-          </div>
-
-          <div className="pt-6 border-t border-[#E8DFD3] flex items-center justify-between text-xs text-[#7A887E]">
-            <span>Last reviewed: October 2026</span>
-            <Link to="/book-a-call" className="font-semibold text-[#1A382B] hover:underline">
-              Contact Care Desk →
-            </Link>
-          </div>
-
-        </div>
-
       </div>
     </div>
   );
