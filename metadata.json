@@ -1,0 +1,6 @@
+{
+  "name": "MR. PAL - Care at Home",
+  "description": "Compassionate home-care support for patients, senior citizens, and families across Mumbai.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
